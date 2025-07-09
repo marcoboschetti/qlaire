@@ -2,10 +2,8 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
@@ -15,8 +13,10 @@ import (
 func main() {
 
 	gin.SetMode(gin.DebugMode)
-	godotenv.Load(".env")
-	rand.Seed(time.Now().Unix())
+	err := godotenv.Load(".env")
+	if err != nil {
+		fmt.Println("No .env file found, using environment variables")
+	}
 
 	port := os.Getenv("PORT")
 	if port == "" {

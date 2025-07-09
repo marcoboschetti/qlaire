@@ -7,15 +7,20 @@ type (
 		Title          string `json:"title"`
 	}
 
+	GeneratedSeed struct {
+		Query string `json:"query"`
+		Type  string `json:"type"`
+	}
+
 	AdsInsightsJob struct {
 		// ID is the unique identifier for the job
 		ID string `json:"id"`
 
-		// Status is the current status of the job (e.g., "pending", "running", "completed", "failed")
-		Status AdsInsightsJobStatus `json:"status"`
+		Status     AdsInsightsJobStatus `json:"status"`
+		FinalError string               `json:"final_error,omitempty"` // Optional error message if the job failed
 
-		JobInputs JobInputs `json:"job_inputs"`
-		// TODO: Target audience, similar concepts, target platform, etc
+		JobInputs     JobInputs     `json:"job_inputs"`
+		GeneratedSeed GeneratedSeed `json:"generated_seed,omitempty"`
 	}
 
 	AdsInsightsJobStatus string

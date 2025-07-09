@@ -12,8 +12,8 @@ var (
 	jobsMutex      = &sync.RWMutex{}
 )
 
-// AddJob adds a new job to the repository
-func AddJob(job *entities.AdsInsightsJob) {
+// UpsertJob adds a new job to the repository
+func UpsertJob(job *entities.AdsInsightsJob) {
 	jobsMutex.Lock()
 	defer jobsMutex.Unlock()
 

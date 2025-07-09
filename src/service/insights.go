@@ -31,7 +31,7 @@ func (a *adsInsightsService) StartAdsInsightJob(input entities.JobInputs) (*enti
 		JobInputs: input,
 	}
 
-	repository.AddJob(newJob)
+	repository.UpsertJob(newJob)
 
 	// Trigger run job async
 	go runJob(newJob)
