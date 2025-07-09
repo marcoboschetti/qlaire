@@ -26,9 +26,12 @@ func main() {
 
 	// Start server
 	r := gin.Default()
+	adsInsightsController := api.NewAdsInsightsController()
+
 	// // *************** API **************
-	public := r.Group("/api")
-	public.POST("/insights", api.StartAdsInsightJob)
+	public := r.Group("/v1/api/ads")
+	public.POST("/insights", adsInsightsController.StartAdsInsightJob)
+	public.GET("/insights/:jobId", adsInsightsController.GetAdsInsightJob)
 
 	// *************** SITE **************
 	// Public Static Resources
