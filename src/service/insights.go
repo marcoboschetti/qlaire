@@ -17,11 +17,14 @@ type AdsInsightsService interface {
 }
 
 type adsInsightsService struct {
+	adsInsightsJobsService AdsInsightsJobsService
 }
 
 // NewAdsInsightsService creates a new AdsInsightsService
 func NewAdsInsightsService() AdsInsightsService {
-	return &adsInsightsService{}
+	return &adsInsightsService{
+		adsInsightsJobsService: NewAdsInsightsJobsService(),
+	}
 }
 
 func (a *adsInsightsService) StartAdsInsightJob(input entities.JobInputs) (*entities.AdsInsightsJob, error) {
@@ -34,7 +37,7 @@ func (a *adsInsightsService) StartAdsInsightJob(input entities.JobInputs) (*enti
 	repository.UpsertJob(newJob)
 
 	// Trigger run job async
-	go runJob(newJob)
+	go a.adsInsightsJobsService.TriggerJobProcessing(newJob)
 
 	return newJob, nil
 }

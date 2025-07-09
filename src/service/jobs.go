@@ -1,15 +1,31 @@
 package service
 
 import (
+	"fmt"
+
 	"github.com/marcoboschetti/qlaire/src/clients"
 	"github.com/marcoboschetti/qlaire/src/entities"
 	"github.com/marcoboschetti/qlaire/src/repository"
 )
 
-func runJob(job *entities.AdsInsightsJob) {
-	// This function will be responsible for running the job in the background.
+type AdsInsightsJobsService interface {
+	TriggerJobProcessing(job *entities.AdsInsightsJob)
+}
 
-	// 1. Reques the LLM to generate Qloo's query (seed) and insight type
+type adsInsightsJobsService struct {
+	qlooClient clients.QlooClient
+}
+
+// NewAdsInsightsJobsService creates a new AdsInsightsJobsService
+func NewAdsInsightsJobsService() AdsInsightsJobsService {
+	return &adsInsightsJobsService{
+		qlooClient: clients.NewQlooClient(),
+	}
+}
+
+// TriggerJobProcessing runs all the steps of the AdsInsights job
+func (a *adsInsightsJobsService) TriggerJobProcessing(job *entities.AdsInsightsJob) {
+	// 1. Generate Qloo seed via LLM
 	job.Status = entities.AdsInsightsJobStatusGeneratingSeed
 	repository.UpsertJob(job)
 	seed, err := clients.LLMGenerateQlooSeed(job.JobInputs)
@@ -21,10 +37,58 @@ func runJob(job *entities.AdsInsightsJob) {
 	}
 	job.GeneratedSeed = *seed
 
-	// 2. Qloo's entity /search with seed query to retrieve results with names, entity_ids, and short_description
-	// 3. Attempt Qloo's insights with retrieved entity_ids to find popularity
-	// 4. Attempt Qloo's demographic insights with retrieved entity_ids to find demographic information
+	// 2. Search entities via Qloo
+	job.Status = entities.AdsInsightsJobStatusSearchingEntity
+	repository.UpsertJob(job)
+	searchResults, err := a.qlooClient.Search(seed.Query, seed.Type)
+	if err != nil {
+		job.Status = entities.AdsInsightsJobStatusFailed
+		job.FinalError = fmt.Sprintf("search error: %v", err)
+		repository.UpsertJob(job)
+		return
+	}
+	job.SearchResults = searchResults
 
-	// 5. From 3 and 4 information, request the LLM to generate job results with enriched insights
+	if len(searchResults) > 0 {
+		entityIds := a.getEntityIDs(searchResults)
 
+		// 3. Fetch popularity insights for each entity
+		job.Status = entities.AdsInsightsJobStatusFetchingInsights
+		repository.UpsertJob(job)
+
+		allInsights, err := a.qlooClient.GetInsights(entityIds, seed.Type)
+		if err != nil {
+			job.Status = entities.AdsInsightsJobStatusFailed
+			job.FinalError = fmt.Sprintf("insights error: %v", err)
+			repository.UpsertJob(job)
+			return
+		}
+		job.PopularityInsights = allInsights
+
+		// 4. Fetch demographics for top entity
+		job.Status = entities.AdsInsightsJobStatusFetchingDemographics
+		repository.UpsertJob(job)
+		demoResp, err := a.qlooClient.GetDemographics(entityIds)
+		if err != nil {
+			job.Status = entities.AdsInsightsJobStatusFailed
+			job.FinalError = fmt.Sprintf("demographics error: %v", err)
+			repository.UpsertJob(job)
+			return
+		}
+		job.DemographicBuckets = demoResp
+	}
+
+	// 5. Generate final enriched insights via LLM
+	job.Status = entities.AdsInsightsJobStatusGeneratingOutput
+	repository.UpsertJob(job)
+	// TODO: call LLM to assemble final job results
+}
+
+// getEntityIDs extracts entity IDs from search results
+func (a *adsInsightsJobsService) getEntityIDs(results []entities.SearchResult) []string {
+	ids := make([]string, len(results))
+	for i, r := range results {
+		ids[i] = r.EntityID
+	}
+	return ids
 }

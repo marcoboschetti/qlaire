@@ -65,5 +65,5 @@ func (a *adsInsightsController) StartAdsInsightJob(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"insights": newJob})
+	c.JSON(http.StatusOK, gin.H{"job": newJob})
 }
