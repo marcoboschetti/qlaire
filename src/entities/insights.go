@@ -19,6 +19,8 @@ type (
 		SearchResults      []SearchResult      `json:"search_results,omitempty"`
 		PopularityInsights []InsightEntity     `json:"insights_response,omitempty"`
 		DemographicBuckets []DemographicBucket `json:"demographics,omitempty"`
+
+		AdsCampaignResult map[string]interface{} `json:"ads_campaign_result,omitempty"` // Final enriched insights from LLM
 	}
 
 	GeneratedSeed struct {

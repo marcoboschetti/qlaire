@@ -13,13 +13,15 @@ type AdsInsightsJobsService interface {
 }
 
 type adsInsightsJobsService struct {
-	qlooClient clients.QlooClient
+	qlooClient    clients.QlooClient
+	openRouterURL clients.RouterAIClient
 }
 
 // NewAdsInsightsJobsService creates a new AdsInsightsJobsService
 func NewAdsInsightsJobsService() AdsInsightsJobsService {
 	return &adsInsightsJobsService{
-		qlooClient: clients.NewQlooClient(),
+		qlooClient:    clients.NewQlooClient(),
+		openRouterURL: clients.NewRouterAIClient(),
 	}
 }
 
@@ -28,7 +30,7 @@ func (a *adsInsightsJobsService) TriggerJobProcessing(job *entities.AdsInsightsJ
 	// 1. Generate Qloo seed via LLM
 	job.Status = entities.AdsInsightsJobStatusGeneratingSeed
 	repository.UpsertJob(job)
-	seed, err := clients.LLMGenerateQlooSeed(job.JobInputs)
+	seed, err := a.openRouterURL.LLMGenerateQlooSeed(job.JobInputs)
 	if err != nil {
 		job.Status = entities.AdsInsightsJobStatusFailed
 		job.FinalError = err.Error()
@@ -81,7 +83,16 @@ func (a *adsInsightsJobsService) TriggerJobProcessing(job *entities.AdsInsightsJ
 	// 5. Generate final enriched insights via LLM
 	job.Status = entities.AdsInsightsJobStatusGeneratingOutput
 	repository.UpsertJob(job)
-	// TODO: call LLM to assemble final job results
+
+	output, err := a.openRouterURL.LLMGenerateAdsCampaign(job)
+	if err != nil {
+		job.Status = entities.AdsInsightsJobStatusFailed
+		job.FinalError = fmt.Sprintf("LLM ads campaign generation error: %v", err)
+		repository.UpsertJob(job)
+		return
+	}
+	job.Status = entities.AdsInsightsJobStatusCompleted
+	job.AdsCampaignResult = output
 }
 
 // getEntityIDs extracts entity IDs from search results
