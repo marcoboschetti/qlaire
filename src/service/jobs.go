@@ -13,15 +13,16 @@ type AdsInsightsJobsService interface {
 }
 
 type adsInsightsJobsService struct {
-	qlooClient    clients.QlooClient
-	openRouterURL clients.RouterAIClient
+	qlooClient clients.QlooClient
+	llmClient  clients.LLMClient
 }
 
 // NewAdsInsightsJobsService creates a new AdsInsightsJobsService
 func NewAdsInsightsJobsService() AdsInsightsJobsService {
 	return &adsInsightsJobsService{
-		qlooClient:    clients.NewQlooClient(),
-		openRouterURL: clients.NewRouterAIClient(),
+		qlooClient: clients.NewQlooClient(),
+		llmClient:  clients.NewGroqClient(),
+		// openRouterURL: clients.NewRouterAIClient(),
 	}
 }
 
@@ -30,7 +31,7 @@ func (a *adsInsightsJobsService) TriggerJobProcessing(job *entities.AdsInsightsJ
 	// 1. Generate Qloo seed via LLM
 	job.Status = entities.AdsInsightsJobStatusGeneratingSeed
 	repository.UpsertJob(job)
-	seed, err := a.openRouterURL.LLMGenerateQlooSeed(job.JobInputs)
+	seed, err := a.llmClient.LLMGenerateQlooSeed(job.JobInputs)
 	if err != nil {
 		job.Status = entities.AdsInsightsJobStatusFailed
 		job.FinalError = err.Error()
@@ -84,7 +85,7 @@ func (a *adsInsightsJobsService) TriggerJobProcessing(job *entities.AdsInsightsJ
 	job.Status = entities.AdsInsightsJobStatusGeneratingOutput
 	repository.UpsertJob(job)
 
-	output, err := a.openRouterURL.LLMGenerateAdsCampaign(job)
+	output, err := a.llmClient.LLMGenerateAdsCampaign(job)
 	if err != nil {
 		job.Status = entities.AdsInsightsJobStatusFailed
 		job.FinalError = fmt.Sprintf("LLM ads campaign generation error: %v", err)

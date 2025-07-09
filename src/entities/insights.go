@@ -20,7 +20,7 @@ type (
 		PopularityInsights []InsightEntity     `json:"insights_response,omitempty"`
 		DemographicBuckets []DemographicBucket `json:"demographics,omitempty"`
 
-		AdsCampaignResult map[string]interface{} `json:"ads_campaign_result,omitempty"` // Final enriched insights from LLM
+		AdsCampaignResult *AdsCampaign `json:"ads_campaign_result,omitempty"` // Final enriched insights from LLM
 	}
 
 	GeneratedSeed struct {
@@ -51,6 +51,53 @@ type (
 		Gender   map[string]float64 `json:"gender"`
 	}
 
+	AdsCampaign struct {
+		AdCopy           []AdCopy          `json:"ad_copy"`
+		CreativeConcepts []CreativeConcept `json:"creative_concepts"`
+		PersonaSummary   PersonaSummary    `json:"persona_summary"`
+		Segmentation     Segmentation      `json:"segmentation"`
+		CampaignConfig   CampaignConfig    `json:"campaign_config"`
+		KeyInsights      []string          `json:"key_insights"`
+	}
+
+	AdCopy struct {
+		Headline    string `json:"headline"`
+		Description string `json:"description"`
+	}
+
+	CreativeConcept struct {
+		ConceptType string `json:"type"`
+		Description string `json:"description"`
+		Elements    string `json:"elements"`
+	}
+
+	PersonaSummary struct {
+		Age       string `json:"age"`
+		Gender    string `json:"gender"`
+		Behavior  string `json:"behavior"`
+		Interests string `json:"interests"`
+	}
+
+	Segmentation struct {
+		Age       string `json:"age"`
+		Gender    string `json:"gender"`
+		Behavior  string `json:"behavior"`
+		Devices   string `json:"devices"`
+		Interests string `json:"interests"`
+		Location  string `json:"location"`
+	}
+
+	CampaignConfig struct {
+		Objective  string          `json:"objective"`
+		Placements string          `json:"placements"`
+		Budget     string          `json:"budget"`
+		ABTesting  []ABTestVariant `json:"a_b_testing"`
+	}
+
+	ABTestVariant struct {
+		TestName string `json:"test_name"`
+		Variants string `json:"variants"`
+	}
 	AdsInsightsJobStatus string
 )
 
