@@ -36,9 +36,16 @@ func main() {
 	// *************** SITE **************
 	// Public Static Resources
 	r.GET("/", func(c *gin.Context) { http.ServeFile(c.Writer, c.Request, "./site/index.html") })
-	r.GET("/favicon.ico", func(c *gin.Context) { http.ServeFile(c.Writer, c.Request, "./site/logo.ico") })
-	publicSite := r.Group("/site")
-	publicSite.Static("/", "./site/")
+	r.GET("/favicon.ico", func(c *gin.Context) { http.ServeFile(c.Writer, c.Request, "./site/favicon.ico") })
+
+	// Serve React app static files
+	r.Static("/static", "./site/static")
+	r.StaticFile("/manifest.json", "./site/manifest.json")
+
+	// Catch-all route for React Router
+	r.NoRoute(func(c *gin.Context) {
+		http.ServeFile(c.Writer, c.Request, "./site/index.html")
+	})
 
 	r.Run(":" + port)
 }

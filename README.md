@@ -180,13 +180,38 @@ Jobs progress through the following states:
 
 ## 🎨 Web Interface
 
-The application includes a beautiful, responsive web interface that provides:
+The application includes a modern React-based web interface that provides:
 
 - **Intuitive Form**: Easy campaign input with validation
 - **Real-time Status**: Live progress tracking with visual indicators
 - **Step-by-step Progress**: Clear indication of current processing stage
-- **Rich Results Display**: Beautifully formatted campaign results
+- **Detailed Step Information**: View intermediate data from each processing step
+- **Rich Results Display**: Beautifully formatted campaign results with export functionality
 - **Mobile Responsive**: Works seamlessly on all devices
+- **Copy to Clipboard**: Easy copying of ad copy and campaign data
+- **Export Functionality**: Download campaign results as JSON
+
+### Frontend Development
+
+The React frontend is located in the `site/` directory. For development:
+
+```bash
+cd site
+npm install
+npm start
+```
+
+This will start the React development server on `http://localhost:3000` with hot reloading.
+
+For production builds:
+
+```bash
+cd site
+npm run build
+./build.sh
+```
+
+See `site/README.md` for detailed frontend documentation.
 
 ## 🔧 Configuration
 
