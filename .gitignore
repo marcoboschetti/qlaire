@@ -1,2 +1,5 @@
 .env
 .vscode/
+
+./site/build/
+./site/node_modules/
