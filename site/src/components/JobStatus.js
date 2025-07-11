@@ -1,7 +1,7 @@
 import React from 'react';
-import { CheckCircle, Clock, AlertCircle, Loader } from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, Loader, RefreshCw, Brain } from 'lucide-react';
 
-const JobStatus = ({ job, statusMessage, statusSteps }) => {
+const JobStatus = ({ job, statusMessage, statusSteps, onReset }) => {
   const getStatusIcon = (status) => {
     switch (status) {
       case 'completed':
@@ -33,7 +33,14 @@ const JobStatus = ({ job, statusMessage, statusSteps }) => {
 
   return (
     <div className="status-section">
-      <h2>Job Status</h2>
+      <div className="status-header">
+        <h2>Job Status</h2>
+        <div className="qloo-badge">
+          <Brain size={16} />
+          Powered by Qloo Taste AI™
+        </div>
+      </div>
+      
       <div className="status-indicator">
         {getStatusIcon(job.status)}
         <span className={getStatusColor(job.status)}>{statusMessage}</span>
@@ -76,6 +83,15 @@ const JobStatus = ({ job, statusMessage, statusSteps }) => {
         <div className="error-message">
           <AlertCircle />
           {job.final_error}
+        </div>
+      )}
+
+      {(job.status === 'completed' || job.status === 'failed') && (
+        <div className="status-actions">
+          <button onClick={onReset} className="btn-secondary">
+            <RefreshCw size={16} />
+            Create New Campaign
+          </button>
         </div>
       )}
     </div>

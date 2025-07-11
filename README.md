@@ -185,11 +185,13 @@ The application includes a modern React-based web interface that provides:
 - **Intuitive Form**: Easy campaign input with validation
 - **Real-time Status**: Live progress tracking with visual indicators
 - **Step-by-step Progress**: Clear indication of current processing stage
-- **Detailed Step Information**: View intermediate data from each processing step
+- **Collapsible Step Details**: High-level summaries with expandable detailed views
+- **Qloo Cultural Intelligence**: Emphasizes the value of Qloo's Taste AI™ insights
+- **Prominent Campaign Results**: Full-width display of generated campaigns
 - **Rich Results Display**: Beautifully formatted campaign results with export functionality
 - **Mobile Responsive**: Works seamlessly on all devices
 - **Copy to Clipboard**: Easy copying of ad copy and campaign data
-- **Export Functionality**: Download campaign results as JSON
+- **Export Functionality**: Download campaign results as JSON with Qloo insights metadata
 
 ### Frontend Development
 

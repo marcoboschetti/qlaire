@@ -7,7 +7,10 @@ import {
   Settings, 
   Lightbulb,
   Download,
-  Share2
+  Share2,
+  Brain,
+  Target,
+  TrendingUp
 } from 'lucide-react';
 
 const CampaignResults = ({ job }) => {
@@ -33,14 +36,20 @@ const CampaignResults = ({ job }) => {
     const campaignData = {
       job_id: job.id,
       generated_at: new Date().toISOString(),
-      campaign: campaign
+      campaign: campaign,
+      qloo_insights: {
+        seed: job.generated_seed,
+        entities_found: job.search_results?.length || 0,
+        popularity_insights: job.popularity_insights?.length || 0,
+        demographics_analyzed: job.demographic_buckets?.length || 0
+      }
     };
     
     const blob = new Blob([JSON.stringify(campaignData, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `campaign-${job.id}.json`;
+    a.download = `qlaire-campaign-${job.id}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -54,13 +63,20 @@ const CampaignResults = ({ job }) => {
   return (
     <div className="results-section">
       <div className="results-header">
-        <h2>
-          <i className="fas fa-chart-line"></i> Campaign Results
-        </h2>
+        <div className="results-title">
+          <h2>
+            <Target size={24} />
+            Your AI-Generated Campaign
+          </h2>
+          <div className="qloo-insights-summary">
+            <Brain size={16} />
+            <span>Enhanced with Qloo's cultural intelligence</span>
+          </div>
+        </div>
         <div className="results-actions">
           <button onClick={exportCampaign} className="btn-secondary">
             <Download size={16} />
-            Export
+            Export Campaign
           </button>
           <button onClick={() => copyToClipboard(JSON.stringify(campaign, null, 2))} className="btn-secondary">
             <Share2 size={16} />
@@ -224,6 +240,10 @@ const CampaignResults = ({ job }) => {
             <Lightbulb size={20} />
             Key Insights
           </h3>
+          <div className="insights-highlight">
+            <TrendingUp size={16} />
+            <span>Supported by Qloo's cultural intelligence analysis</span>
+          </div>
           <ul className="insights-list">
             {campaign.key_insights.map((insight, index) => (
               <li key={index}>

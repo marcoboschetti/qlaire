@@ -13,6 +13,7 @@ function App() {
   const [currentJob, setCurrentJob] = useState(null);
   const [pollingInterval, setPollingInterval] = useState(null);
   const [error, setError] = useState(null);
+  const [showForm, setShowForm] = useState(true);
 
   const statusSteps = {
     'pending': 0,
@@ -31,6 +32,7 @@ function App() {
       const response = await axios.post(`${API_BASE_URL}/v1/api/ads/insights`, campaignData);
       const job = response.data.job;
       setCurrentJob(job);
+      setShowForm(false);
       startPolling(job.id);
       return job;
     } catch (error) {
@@ -77,6 +79,16 @@ function App() {
     return messages[status] || status;
   };
 
+  const resetForm = () => {
+    setCurrentJob(null);
+    setShowForm(true);
+    setError(null);
+    if (pollingInterval) {
+      clearInterval(pollingInterval);
+      setPollingInterval(null);
+    }
+  };
+
   useEffect(() => {
     return () => {
       if (pollingInterval) {
@@ -95,24 +107,27 @@ function App() {
         </div>
       )}
 
-      {currentJob && (
+      {!showForm && currentJob && (
         <>
           <JobStatus 
             job={currentJob} 
             statusMessage={getStatusMessage(currentJob.status)}
             statusSteps={statusSteps}
+            onReset={resetForm}
           />
           <JobSteps job={currentJob} />
         </>
       )}
 
-      <div className="main-content">
-        <CampaignForm 
-          onSubmit={startCampaign}
-          disabled={currentJob && currentJob.status !== 'completed' && currentJob.status !== 'failed'}
-        />
-        <CampaignResults job={currentJob} />
-      </div>
+      {showForm ? (
+        <div className="form-container">
+          <CampaignForm onSubmit={startCampaign} />
+        </div>
+      ) : (
+        <div className="results-container">
+          <CampaignResults job={currentJob} />
+        </div>
+      )}
     </div>
   );
 }
