@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Loader2, AlertCircle, X } from 'lucide-react';
 
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
+
 const ServerStatus = ({ children }) => {
   const [serverStatus, setServerStatus] = useState('checking'); // 'checking', 'online', 'offline'
   const [retryCount, setRetryCount] = useState(0);
@@ -9,7 +11,7 @@ const ServerStatus = ({ children }) => {
 
   const checkServerHealth = async () => {
     try {
-      const response = await fetch('/ping', {
+      const response = await fetch(`${API_BASE_URL}/ping`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +70,7 @@ const ServerStatus = ({ children }) => {
               <AlertCircle size={12} />
               <span>
                 <strong>Hackathon Project:</strong> Running on suboptimal infrastructure. 
-                Thank you for your patience! (Attempt {retryCount + 1}/{maxRetries})
+                Thank you for your patience! (Attempt {retryCount + 1})
               </span>
             </div>
           </div>
