@@ -5,6 +5,7 @@ import CampaignForm from './components/CampaignForm';
 import JobStatus from './components/JobStatus';
 import CampaignResults from './components/CampaignResults';
 import JobSteps from './components/JobSteps';
+import ServerStatus from './components/ServerStatus';
 import './App.css';
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || '';
@@ -98,37 +99,39 @@ function App() {
   }, [pollingInterval]);
 
   return (
-    <div className="container">
-      <Header job={currentJob} />
-      
-      {error && (
-        <div className="error-message">
-          <i className="fas fa-exclamation-triangle"></i> {error}
-        </div>
-      )}
+    <ServerStatus>
+      <div className="container">
+        <Header job={currentJob} />
+        
+        {error && (
+          <div className="error-message">
+            <i className="fas fa-exclamation-triangle"></i> {error}
+          </div>
+        )}
 
-      {!showForm && currentJob && (
-        <>
-          <JobStatus 
-            job={currentJob} 
-            statusMessage={getStatusMessage(currentJob.status)}
-            statusSteps={statusSteps}
-            onReset={resetForm}
-          />
-          <JobSteps job={currentJob} />
-        </>
-      )}
+        {!showForm && currentJob && (
+          <>
+            <JobStatus 
+              job={currentJob} 
+              statusMessage={getStatusMessage(currentJob.status)}
+              statusSteps={statusSteps}
+              onReset={resetForm}
+            />
+            <JobSteps job={currentJob} />
+          </>
+        )}
 
-      {showForm ? (
-        <div className="form-container">
-          <CampaignForm onSubmit={startCampaign} />
-        </div>
-      ) : (
-        <div className="results-container">
-          <CampaignResults job={currentJob} />
-        </div>
-      )}
-    </div>
+        {showForm ? (
+          <div className="form-container">
+            <CampaignForm onSubmit={startCampaign} />
+          </div>
+        ) : (
+          <div className="results-container">
+            <CampaignResults job={currentJob} />
+          </div>
+        )}
+      </div>
+    </ServerStatus>
   );
 }
 

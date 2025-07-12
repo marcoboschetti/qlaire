@@ -49,6 +49,14 @@ func main() {
 	public.POST("/insights", adsInsightsController.StartAdsInsightJob)
 	public.GET("/insights/:jobId", adsInsightsController.GetAdsInsightJob)
 
+	// Health check endpoint
+	r.GET("/ping", func(c *gin.Context) {
+		c.JSON(200, gin.H{
+			"status":  "ok",
+			"message": "Qlaire API is running",
+		})
+	})
+
 	// *************** SITE **************
 	// Public Static Resources
 	r.GET("/", func(c *gin.Context) { http.ServeFile(c.Writer, c.Request, "./site/index.html") })

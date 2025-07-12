@@ -15,15 +15,27 @@ const Header = ({ job }) => {
       <p>AI-Powered Ad Campaign Generator</p>
       <div className="header-subtitle">
         <div className="hackathon-badge">
-          <Zap size={14} />
-          <a 
-            href="https://qloo-hackathon.devpost.com/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="hackathon-link"
-          >
-            Qloo LLM Hackathon
-          </a>
+          <span className="chip">
+            <Zap size={14} style={{ verticalAlign: 'middle', marginRight: 4 }} />
+            <a 
+              href="https://qloo-hackathon.devpost.com/" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="hackathon-link"
+            >
+              Qloo LLM Hackathon
+            </a>
+          </span>
+          <span className="chip" style={{ marginLeft: '0.5em' }}>
+            <a
+              href="https://devpost.com/marcoo-boschetti"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hackathon-link"
+            >
+              Created by Marco
+            </a>
+          </span>
         </div>
       </div>
       <div className="header-description">
