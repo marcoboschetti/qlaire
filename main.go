@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
 	"github.com/marcoboschetti/qlaire/src/api"
@@ -26,6 +27,21 @@ func main() {
 
 	// Start server
 	r := gin.Default()
+
+	// CORS configuration
+	allowedOrigins := os.Getenv("ALLOWED_ORIGINS")
+	if allowedOrigins == "" {
+		allowedOrigins = "http://localhost:3000,http://localhost:8080"
+	}
+
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{allowedOrigins}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}
+	config.AllowHeaders = []string{"Origin", "Content-Type", "Accept", "Authorization"}
+	config.AllowCredentials = true
+
+	r.Use(cors.New(config))
+
 	adsInsightsController := api.NewAdsInsightsController()
 
 	// // *************** API **************
