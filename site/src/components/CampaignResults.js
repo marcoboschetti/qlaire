@@ -128,8 +128,8 @@ const CampaignResults = ({ job }) => {
             {campaign.creative_concepts.map((concept, index) => (
               <div key={index} className="creative-concept-item">
                 <div className="concept-header">
-                  <h4>{concept.concept_type}</h4>
-                  <span className="concept-badge">{concept.concept_type}</span>
+                  <h4>{concept.type}</h4>
+                  <span className="concept-badge">{concept.type}</span>
                 </div>
                 <div className="concept-content">
                   <p><strong>Description:</strong> {concept.description}</p>
@@ -246,7 +246,7 @@ const CampaignResults = ({ job }) => {
           </div>
           <ul className="insights-list">
             {campaign.key_insights.map((insight, index) => (
-              <li key={index}>
+              <li key={index}> 
                 <i className="fas fa-check"></i> {insight}
               </li>
             ))}

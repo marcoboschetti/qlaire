@@ -26,7 +26,7 @@ const JobSteps = ({ job }) => {
             <Search size={20} />
             <div>
               <h4>Cultural Seed Generated</h4>
-              <p>Qloo identified "{job.generated_seed.query}" as the most culturally relevant reference</p>
+              <p>We identified "{job.generated_seed.query}" as the most culturally relevant reference to query Qloo</p>
             </div>
           </div>
           {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
@@ -75,15 +75,25 @@ const JobSteps = ({ job }) => {
               <span>Qloo's cultural graph connected your product to relevant entities</span>
             </div>
             <div className="data-grid">
-              {job.search_results.map((result, index) => (
-                <div key={index} className="data-item">
-                  <h5>{result.name}</h5>
-                  <p><strong>Type:</strong> {result.types.join(', ')}</p>
-                  {result.short_desc && (
-                    <p><strong>Description:</strong> {result.short_desc}</p>
-                  )}
-                </div>
-              ))}
+              {job.search_results.map((result, index) => {
+                // Find matching popularity insight for this search result
+                const matchingInsight = job.insights_response?.find(insight => 
+                  insight.EntityID === result.entity_id || insight.name === result.name
+                );
+                
+                return (
+                  <div key={index} className="data-item">
+                    <h5>{result.name}</h5>
+                    <p><strong>Type:</strong> {result.types.join(', ')}</p>
+                    {result.short_desc && (
+                      <p><strong>Description:</strong> {result.short_desc}</p>
+                    )}
+                    {matchingInsight && (
+                      <p><strong>Popularity:</strong> {matchingInsight.popularity.toFixed(2)}</p>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

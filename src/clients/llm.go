@@ -15,7 +15,7 @@ const (
 	Product title: "%s"
 	
 	Requirements:
-	1. Choose **one** seed entity (movie, videogame, book, artist, brand, etc.) **most closely aligned** with the product’s genre, tone, and target audience. It must be a well‑known example that directly reflects the user’s description.
+	1. Choose **one** seed entity (movie, videogame, book, artist, brand, etc.) **most closely aligned** with the product’s genre, tone, and target audience. It must be a well‑known example that **directly** reflects the product description.
 	2. Return only the exact name of that entity.
 	3. Also return its Qloo entity type from the following list:
 	
@@ -105,7 +105,7 @@ const (
 		},
 		"key_insights": [
 			"<string>"
-		] // As many or few as you find relevant
+		] // As many or few as you find relevant, around 7 to 10 entries
 	  }
 	}`
 )

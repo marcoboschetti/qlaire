@@ -85,13 +85,21 @@ func (a *adsInsightsJobsService) TriggerJobProcessing(job *entities.AdsInsightsJ
 	job.Status = entities.AdsInsightsJobStatusGeneratingOutput
 	repository.UpsertJob(job)
 
-	output, err := a.llmClient.LLMGenerateAdsCampaign(job)
+	// I'm trying this up to 4 times to give a chance to the LLM to provide the expected output
+	var output *entities.AdsCampaign
+	for i := 0; i < 4; i++ {
+		output, err = a.llmClient.LLMGenerateAdsCampaign(job)
+		if err == nil {
+			break
+		}
+	}
 	if err != nil {
 		job.Status = entities.AdsInsightsJobStatusFailed
 		job.FinalError = fmt.Sprintf("LLM ads campaign generation error: %v", err)
 		repository.UpsertJob(job)
 		return
 	}
+
 	job.Status = entities.AdsInsightsJobStatusCompleted
 	job.AdsCampaignResult = output
 }

@@ -99,7 +99,7 @@ function App() {
 
   return (
     <div className="container">
-      <Header />
+      <Header job={currentJob} />
       
       {error && (
         <div className="error-message">

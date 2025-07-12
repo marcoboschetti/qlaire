@@ -33,9 +33,43 @@ body {
   gap: 15px;
 }
 
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 12px 16px;
+  backdrop-filter: blur(15px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
 .header-icon {
-  width: 40px;
-  height: 40px;
+  width: 80px;
+  height: 160px;
+  object-fit: contain;
+}
+
+.header-logo {
+  width: 280px;
+  height: 80px;
+  object-fit: contain;
+}
+
+/* Completed state - smaller logo and icon */
+.logo-container-completed {
+  padding: 8px 12px;
+  gap: 10px;
+}
+
+.header-icon-completed {
+  width: 50px;
+  height: 100px;
+}
+
+.header-logo-completed {
+  width: 180px;
+  height: 50px;
 }
 
 .header p {
@@ -74,6 +108,16 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.hackathon-link {
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.hackathon-link:hover {
+  opacity: 0.8;
 }
 
 .header-description {
@@ -486,6 +530,36 @@ body {
   
   .header h1 {
     font-size: 2rem;
+  }
+  
+  .header-logo {
+    width: 160px;
+    height: 50px;
+  }
+  
+  .logo-container {
+    gap: 10px;
+    padding: 8px 12px;
+  }
+  
+  .header-icon {
+    width: 60px;
+    height: 120px;
+  }
+  
+  .header-icon-completed {
+    width: 40px;
+    height: 80px;
+  }
+  
+  .header-logo-completed {
+    width: 120px;
+    height: 35px;
+  }
+  
+  .logo-container-completed {
+    padding: 6px 8px;
+    gap: 8px;
   }
   
   .container {

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+
+echo "Building React app..."
+npm install
+
 # Build the React app
 echo "Building React app..."
 npm run build
